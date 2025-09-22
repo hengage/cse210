@@ -14,23 +14,25 @@ public class Scripture
         {
             _words.Add(new Word(word));
         }
-        Console.WriteLine($"_words: {string.Join(", ", _words)}");
     }
 
     public void HideRandomWords(int numberToHide = 3)
     {
-        Random rand = new Random();
-        int hidden = 0;
+         Random rand = new Random();
 
-        while (hidden < numberToHide)
-        {
-            int index = rand.Next(_words.Count);
-            if (!_words[index].IsHidden())
-            {
-                _words[index].Hide();
-                hidden++;
-            }
-        }
+    // Get list of visible words
+    List<Word> visibleWords = _words.FindAll(word => !word.IsHidden());
+
+    // If fewer visible words than count, adjust
+    int wordsToHide = Math.Min(numberToHide, visibleWords.Count);
+
+    for (int i = 0; i < wordsToHide; i++)
+    {
+        int index = rand.Next(visibleWords.Count);
+        visibleWords[index].Hide();
+        visibleWords.RemoveAt(index); // Prevent hiding same word twice
+    }
+
     }
 
     public bool AllWordsHidden()
@@ -50,5 +52,49 @@ public class Scripture
             verseText += word.GetDisplayText() + " ";
         }
         return $"{_reference.GetDisplayText()} {verseText.Trim()}";
+    }
+
+    public static List<Scripture> LoadFromFile(string filePath)
+    {
+        List<Scripture> scriptures = new List<Scripture>();
+
+        foreach (string line in File.ReadAllLines(filePath))
+        {
+            string[] parts = line.Split('|');
+
+            Reference reference;
+            string text;
+
+            if (parts.Length == 4)
+            {
+                // Format: Book|Chapter|Verse|Text
+                string book = parts[0];
+                int chapter = int.Parse(parts[1]);
+                int verse = int.Parse(parts[2]);
+                text = parts[3];
+
+                reference = new Reference(book, chapter, verse);
+            }
+            else if (parts.Length == 5)
+            {
+                // Format: Book|Chapter|StartVerse|EndVerse|Text
+                string book = parts[0];
+                int chapter = int.Parse(parts[1]);
+                int startVerse = int.Parse(parts[2]);
+                int endVerse = int.Parse(parts[3]);
+                text = parts[4];
+
+                reference = new Reference(book, chapter, startVerse, endVerse);
+            }
+            else
+            {
+                // Skip malformed lines
+                continue;
+            }
+
+        scriptures.Add(new Scripture(reference, text));
+    }
+
+    return scriptures;
     }
 }
