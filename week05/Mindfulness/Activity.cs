@@ -26,6 +26,7 @@ public class Activity
         Console.WriteLine("\nWell done!");
         ShowSpinner(2);
         Console.WriteLine("You completed the " + _name + " for " + _duration + " second(s).");
+        ActivityLogger.LogActivity(_name);
         ShowSpinner(3);
     }
 
