@@ -17,10 +17,10 @@ public class EternalGoal : Goal
         return false;  // Eternal goals are never complete
     }
 
-    public override string GetDetailsString()
-    {
-        return $"[ ] {_shortName} ({_description}) -- Eternal Goal";
-    }
+    // public override string GetDetailsString()
+    // {
+    //     return $"[ ] {_shortName} ({_description}) -- Eternal Goal";
+    // }
 
     public override string GetStringRepresentation()
     {

@@ -22,6 +22,16 @@ public class ChecklistGoal : Goal
         return _amountCompleted >= _target;
     }
 
+    public bool JustCompleted()
+    {
+        return _amountCompleted == _target;
+    }
+
+    public int GetBonus()
+    {
+        return _bonus;
+    }
+
     public override string GetDetailsString()
     {
         string completionMark = IsComplete() ? "[X]" : "[ ]";

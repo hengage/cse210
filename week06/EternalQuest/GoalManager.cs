@@ -142,8 +142,18 @@ public class GoalManager
             
             int points = int.Parse(goal.GetPoints());
             _score += points;
-            
-            Console.WriteLine($"Congratulations! You have earned {points} points!");
+
+            if (goal is ChecklistGoal checklistGoal && checklistGoal.JustCompleted())
+            {
+                int bonus = checklistGoal.GetBonus();
+                _score += bonus;
+                Console.WriteLine($"Congratulations! You have earned {points} points!");
+                Console.WriteLine($"Bonus!!! You have earned an additional {bonus} points!");
+            }
+            else
+            {
+                Console.WriteLine($"Congratulations! You have earned {points} points!");
+            }
             DisplayPlayerInfo();
         }
         else
