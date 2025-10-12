@@ -1,0 +1,3 @@
+40
+SimpleGoal:|simple|test simple|20|True
+SimpleGoal:|simple 2|test simple 2|5|False
