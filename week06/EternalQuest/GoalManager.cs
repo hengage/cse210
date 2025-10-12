@@ -86,6 +86,7 @@ public class GoalManager
         Console.WriteLine("  1. Simple Goal");
         Console.WriteLine("  2. Eternal Goal");
         Console.WriteLine("  3. Checklist Goal");
+        Console.WriteLine("  4. Timed Goal");
         Console.Write("Which type of goal would you like to create? ");
         
         string choice = Console.ReadLine();
@@ -115,6 +116,13 @@ public class GoalManager
                 Console.Write("What is the bonus for accomplishing it that many times? ");
                 int bonus = int.Parse(Console.ReadLine());
                 goal = new ChecklistGoal(name, description, points, target, bonus);
+                break;
+            case "4":
+                Console.Write("How many days do you have to complete this goal? ");
+                int days = int.Parse(Console.ReadLine());
+                Console.Write("What is the bonus for completing it on time? ");
+                int timedBonus = int.Parse(Console.ReadLine());
+                goal = new TimedGoal(name, description, points, days, timedBonus);
                 break;
             default:
                 Console.WriteLine("Invalid goal type.");
@@ -149,6 +157,13 @@ public class GoalManager
                 _score += bonus;
                 Console.WriteLine($"Congratulations! You have earned {points} points!");
                 Console.WriteLine($"Bonus!!! You have earned an additional {bonus} points!");
+            }
+            else if (goal is TimedGoal timedGoal && timedGoal.EarnedBonus())
+            {
+                int bonus = timedGoal.GetBonusPoints();
+                _score += bonus;
+                Console.WriteLine($"Congratulations! You have earned {points} points!");
+                Console.WriteLine($"Time Bonus!!! You have earned an additional {bonus} points for completing on time!");
             }
             else
             {
@@ -217,6 +232,15 @@ public class GoalManager
                     int target = int.Parse(parts[4]);
                     int bonus = int.Parse(parts[5]);
                     _goals.Add(new ChecklistGoal(name, description, points.ToString(), target, bonus));
+                    break;
+                    
+                case "TimedGoal:":
+                    DateTime deadline = DateTime.Parse(parts[4]);
+                    int timedBonus = int.Parse(parts[5]);
+                    bool isComplete = bool.Parse(parts[6]);
+                    var timedGoal = new TimedGoal(name, description, points.ToString(), 0, timedBonus);
+                    if (isComplete) timedGoal.RecordEvent();
+                    _goals.Add(timedGoal);
                     break;
             }
         }
